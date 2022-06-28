@@ -1,0 +1,6 @@
+@import 'discord.js';
+
+@createMessage {
+    message: message,
+            if: message.author.bot => return;
+}

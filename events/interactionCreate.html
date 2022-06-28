@@ -1,0 +1,33 @@
+<script>
+    client.on('interactionCreate', (interaction) => {
+        if (interaction.isCommand()){
+            const command = client.cores.get(interaction.commandName);
+            if (!command) interaction.reply('Command not found');
+            if (command) {
+                if (command.func_status === true) {
+                    command.func[command.name] = require(`./utils/${command.name}`)[command.name];
+                }
+                command.init(client, interaction, player, command);
+                
+            }
+            
+        };
+        if (interaction.isButton()){
+            // interaction.customId
+            fs.readdir('./components/button', (err, files) => {
+                if (err) return console.error(err);
+                files.forEach(file => {
+                    if (file.endsWith('.js')) {
+                        const filename = file.replace('.js', '');
+                        if (filename === interaction.customId){
+                            require(`./components/button/${file}`)
+                            [interaction.customId](client, interaction, player);
+                        }
+                        
+                    }
+                });
+            });
+        }
+        
+    });
+</script>

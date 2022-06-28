@@ -1,0 +1,26 @@
+<script>
+    var commands = [];
+    fs.readdir('./commands', function(err, dirs) {
+        if (err) return console.log(err);
+        dirs.forEach((dir) => {
+            fs.readdir(`./commands/${dir}`, function(err, files) {
+                if (err) return console.log(err);
+                files.forEach((file) => {
+                    file.endsWith('.js') && (() => {
+                        const cmd = require(`./commands/${dir}/${file}`)[file.replace('.js', '')];
+                        if(cmd.name) {
+                            client.cores.set(cmd.name, cmd);
+                            commands.push(cmd);
+                        } else return;
+                    })();
+                });
+                
+            });
+            
+        });
+        
+    });
+    client.once('ready',  () => {
+        client.application.commands.set(commands);
+    });
+</script>
