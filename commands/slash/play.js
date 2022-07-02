@@ -15,7 +15,10 @@ exports.play = {
     },
   ],
   func_status: true,
-  func: {},
+  func: [
+    Number,
+    {},
+  ],
   init: async (client, interaction, player, utils) => {
     await interaction.deferReply();
 
@@ -79,6 +82,9 @@ exports.play = {
     // eslint-disable-next-line camelcase, no-unused-vars
     search_Song = query.replace(/^.*?:\/\//g, 'https://');
 
-    this[utils.name].func['play'](FolodyCore, interaction, player, search_Song);
+    // eslint-disable-next-line max-len
+    this[utils.name]
+        .func[1][this[utils.name]
+            .func[0]]['play'](FolodyCore, interaction, player, search_Song);
   },
 };

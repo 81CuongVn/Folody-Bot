@@ -5,7 +5,10 @@ exports.help = {
   description: 'Help command',
   type: 'CHAT_INPUT',
   func_status: false,
-  func: {},
+  func: [
+    Number,
+    {},
+  ],
   init: async (client, interaction, player, utils) => {
     interaction.reply({
       embeds: [

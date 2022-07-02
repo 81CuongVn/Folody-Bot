@@ -7,7 +7,10 @@ exports.queue = {
   description: 'Queue command',
   type: 'CHAT_INPUT',
   func_status: false,
-  func: {},
+  func: [
+    Number,
+    {},
+  ],
   init: async (client, interaction, player, utils) => {
     const voiceChannel = interaction.member.voice.channel;
     // eslint-disable-next-line max-len

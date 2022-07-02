@@ -5,7 +5,10 @@ exports.ping = {
   description: 'Ping command',
   type: 'CHAT_INPUT',
   func_status: false,
-  func: {},
+  func: [
+    Number,
+    {},
+  ],
   init: async (client, interaction) => {
     interaction.reply({
       embeds: [

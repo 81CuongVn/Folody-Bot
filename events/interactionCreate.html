@@ -5,7 +5,12 @@
             if (!command) interaction.reply('Command not found');
             if (command) {
                 if (command.func_status === true) {
-                    command.func[command.name] = require(`./utils/${command.name}`)[command.name];
+                    command.func[0] = uuid(), command.func[1][command.func[0]] = {
+                        init: function (name) {
+                            this[name] = require(`./utils/${name}`)[name];
+                        },
+                    }, command.func[1][command.func[0]].init(command.name);
+
                 }
                 command.init(client, interaction, player, command);
                 

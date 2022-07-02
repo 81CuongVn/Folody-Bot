@@ -41,7 +41,8 @@
     "simply-djs": "^2.5.2",
     "tesseract.js": "^2.1.5",
     "text-from-image": "^1.1.1",
-    "util": "^0.12.4"
+    "util": "^0.12.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
