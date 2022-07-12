@@ -14,7 +14,7 @@
     "sourceMap": true,
     "allowJs": true,
     "checkJs": true,
-    "outDir": "build/dist",
+    "outDir": "dist",
     "declaration": true,
     "baseUrl": "src",
     "paths": {

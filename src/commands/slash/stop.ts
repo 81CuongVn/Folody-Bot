@@ -14,9 +14,13 @@ export default {
 
     const server = servers.get(interaction.guildId as string);
     if (!server) return void await interaction.followUp('Please join a voice channel and try again');
-    if (server.queue.length === 0) return void await interaction.followUp(messages.NoSong);
-    server.leave();
-    servers.delete(interaction.guildId as string);
-    await void interaction.followUp(messages.Stop);
+    if (server.playing) {
+      server.leave();
+      servers.delete(interaction.guildId as string);
+      await void interaction.followUp(messages.Stop);
+    } else {
+      await void interaction.followUp(messages.NoSong);
+    }
+    
   },
 }

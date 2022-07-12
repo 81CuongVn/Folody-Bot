@@ -9,17 +9,19 @@ export default {
   description: 'Skip commands',
   type: ApplicationCommandType.ChatInput,
   init: async (folody: Folody, interaction: CommandInteraction): Promise<void>  => {
-    interaction.deferReply();
+    await interaction.deferReply();
     // if member is in other voice channel
 
     const server = servers.get(interaction.guildId as string);
     if (!server) return void await interaction.followUp('Please join a voice channel and try again');
-    if (server.queue.length === 0) return void await interaction.followUp(messages.NoSong);
-
-    server.play();
-    if (server.playing) {
-      await void interaction.followUp(messages.Skip);
+    if (server.queue.length === 0) {
+      await interaction.followUp(messages.NoSong);
     }
+    await server.play();
+    if (server.playing) {
+      await interaction.followUp(messages.Skip);
+    }
+      
     
   },
 }

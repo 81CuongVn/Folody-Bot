@@ -2,6 +2,10 @@ import { Platform, Song } from '@Folody/types/Song';
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource, entersState, VoiceConnection, VoiceConnectionDisconnectReason, VoiceConnectionStatus } from '@discordjs/voice';
 import { Snowflake } from 'discord.js';
 import ytdl from 'ytdl-core';
+import { Algorithm } from '@Folody/function/algorithm';
+
+const CHUNK_SIZE = Number(process.env.CHUNK_SIZE);
+const algorithm = new Algorithm(CHUNK_SIZE);
 
 export interface QueueItem {
   song: Song;
@@ -13,16 +17,22 @@ export class Core {
   public guildId: string;
   public playing?: QueueItem;
   public queue: QueueItem[];
+  public channelId: Snowflake;
+  public voiceID: string;
 
+  public setVoice (voiceID: string): void {
+    this.voiceID = voiceID;
+  }
   public readonly voiceConnection: VoiceConnection;
   public readonly audioPlayer: AudioPlayer;
 
   private isReady = false;
 
-  constructor(voiceConnection: VoiceConnection, guildId: string) {
+  constructor(voiceConnection: VoiceConnection, guildId: string, channelId: Snowflake, voiceID: Snowflake) {
     this.voiceConnection = voiceConnection;
     this.guildId = guildId;
-
+    this.channelId = channelId;
+    this.voiceID = voiceID;
     this.audioPlayer = createAudioPlayer();
     this.queue = [];
     
@@ -61,7 +71,7 @@ export class Core {
           await entersState(
             this.voiceConnection,
             VoiceConnectionStatus.Ready,
-            15_000,
+            10_000,
           );
         } catch {
           if (
@@ -74,6 +84,7 @@ export class Core {
         }
       }
     });
+    
 
     this.audioPlayer.on<"stateChange">('stateChange', async (oldState, newState) => {
       if (
@@ -135,12 +146,16 @@ export class Core {
       if (this.queue.length > 0) {
         this.playing = this.queue.shift() as QueueItem;
         let stream: any;
-        const highWaterMark = 1024 * 1024 * 10;
+        const waterMark = algorithm.waterMark;
+        // eslint-disable-next-line no-console
+        console.log(waterMark);
+        const highWaterMark: number = algorithm.waterMark; // algorithm by Fosly
         if (this.playing?.song.platform === Platform.YOUTUBE) {
           stream = ytdl(this.playing.song.url, {
             highWaterMark,
             filter: 'audioonly',
             quality: 'highestaudio',
+            dlChunkSize: CHUNK_SIZE,
           });
         } else {
           return

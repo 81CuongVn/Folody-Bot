@@ -5,7 +5,10 @@ exports['interactions'] = function (folody: Folody) {
     if (_interaction.isChatInputCommand()) {
       const command = folody.commands.get(_interaction.commandName);
       if (!command) return;
-      command.init(folody, _interaction);
+      if (command.name) {
+        command.init(folody, _interaction);
+      } else return void _interaction.reply('Command not found');
+      
     }
   });
 }

@@ -22,14 +22,28 @@ export default {
     let server = servers.get(interaction.guildId as string);
     if (!server){
       if (interaction.member instanceof GuildMember && interaction.member.voice.channel) {
+        const voice = interaction.member instanceof GuildMember && interaction.member.voice.channel;
+        if (voice && voice.members.size > 1) {
+          if (voice.members.some(member => member.user.bot)) {
+            return void interaction.followUp({
+              embeds: [
+                new EmbedBuilder()
+                  .setTitle('Term of Service')
+                  .setDescription(`You cannot play music while another bot is in the voice channel.`)
+                  .setColor('#34eb56')
+              ],
+            });
+          }
+        }
         const channel = interaction.member.voice.channel
         server = new Core(joinVoiceChannel({
           channelId: channel.id,
           guildId: channel.guild.id,
           adapterCreator: channel.guild.voiceAdapterCreator,
-        }), interaction.guildId as string);
+        }), interaction.guildId as string, interaction.channel?.id as string, channel.id);
         servers.set(interaction.guildId as string, server);
       }
+
     }
     if (!server) return void interaction.followUp('Please join a voice channel and try again');
     try {
@@ -39,7 +53,9 @@ export default {
       console.log(err)
       return void interaction.followUp('Could not connect to voice channel');
     }
+    // if another bot is in the voice channel
     try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const input = interaction.options.get('song_name')!.value! as string;
       const playListId = FolodyYoutube.isPlaylist(input);
       if (playListId) {
@@ -62,7 +78,9 @@ export default {
             ]
           })
         } else {
-          await void interaction.followUp(`Added ${playlist.title}`);
+          if (server.playing) {
+            await void interaction.followUp(`**Added** ${playlist.title}`);
+          }
         }
       } else {
         
@@ -82,7 +100,9 @@ export default {
             ]
           });
         } else {
-          await void interaction.followUp(`Added ${song.title}`);
+          if (server.playing) {
+            await void interaction.followUp(`**Added** ${song.title}`);
+          }
         }
         
       }
