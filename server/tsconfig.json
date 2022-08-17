@@ -1,0 +1,33 @@
+{
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register",
+      "module-alias/register"
+    ]
+  },
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "dist",
+    "declaration": true,
+    "baseUrl": "src",
+    "paths": {
+      "@Folody/*": [
+        "./*"
+      ]
+    },
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
